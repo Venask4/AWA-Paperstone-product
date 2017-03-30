@@ -22,11 +22,52 @@ var exp = (function($) {
 	// Variables
 	// Object containing variables, generally these would be strings or jQuery objects
 	exp.vars = {
+			bestSellerBanner : '<div id="bestSellerBanner"><span>BESTSELLER</span></div>'
 		};
 
 	// Styles
 	// String containing the CSS for the experiment
-	exp.css = '';
+	exp.css = '\
+		#product-box {\
+			border: none;\
+		}\
+		#add-to-basket-box {\
+			border: none;\
+		}\
+		#expected-delivery-box {\
+			border: none !important;\
+		}\
+		#back-arrow {\
+			display: none;\
+		}\
+		.breadcrumb-box a, .breadcrumb-box span {\
+			font-size: 12px !important;\
+		}\
+		#product-box .product-icons-holder {\
+			display: none;\
+		}\
+		#bestSellerBanner {\
+			width: 300px;\
+			height: 25px;\
+			background-color: #CC0000;\
+			color: white;\
+			text-align: center;\
+			font-size: 16px;\
+			font-family: Arial,"Helvetica Neue",Helvetica,sans-serif;\
+			font-weight: 700;\
+			margin-left: 9px;\
+		}\
+		#bestSellerBanner span {\
+			line-height: 25px;\
+			vertical-align: middle;\
+		}\
+		#add-to-basket-box .add-to-basket-button {\
+			background: #ff69b4;\
+		}\
+		#mp-basket-checkout-button {\
+			background: #ff69b4;\
+		}\
+	';
 
 
 	// Init function
@@ -34,6 +75,9 @@ var exp = (function($) {
 	exp.init = function() {
 		// Add styles
 		$('head').append('<style>' + exp.css + '</style>');
+
+		// Add Bestseller banner
+		$('#product-box .img-wrap img').before(exp.vars.bestSellerBanner);
 		};
 
 	exp.init();
