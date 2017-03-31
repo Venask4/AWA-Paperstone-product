@@ -67,6 +67,14 @@ var exp = (function($) {
 		#mp-basket-checkout-button {\
 			background: #ff69b4;\
 		}\
+		#product-box h1 {\
+			float: none;\
+			width: 765px;\
+		}\
+		#prod-description-top-left {\
+			display: block;\
+			margin-bottom: 8px;\
+		}\
 	';
 
 
@@ -76,9 +84,15 @@ var exp = (function($) {
 		// Add styles
 		$('head').append('<style>' + exp.css + '</style>');
 
-		// Add Bestseller banner
-		$('#product-box .img-wrap img').before(exp.vars.bestSellerBanner);
+		// Add Bestseller banner if applicable
+		if ($('#product-box .product-icons-holder span:contains("Bestselling")').length > 0) {
+			$('#product-box .img-wrap img').before(exp.vars.bestSellerBanner);
 		};
+
+		// Move product code above image after product title
+		var $productTitle = $('#product-box .item').children('h1');
+		$productTitle.after($('#prod-description-top-left'));
+	};
 
 	exp.init();
 	// Return the experiment object so we can access it later if required
