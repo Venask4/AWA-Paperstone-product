@@ -22,7 +22,8 @@ var exp = (function($) {
 	// Variables
 	// Object containing variables, generally these would be strings or jQuery objects
 	exp.vars = {
-			bestSellerBanner : '<div id="bestSellerBanner"><span>BESTSELLER</span></div>'
+			bestSellerBanner : '<div id="bestSellerBanner"><span>BESTSELLER</span></div>',
+			lowPricePopup : '<div id="lowPricePopup"><div id="modalContent"><img src="http://2.bp.blogspot.com/-u54XGk-hUdU/U1zanJgulMI/AAAAAAAAByM/aKk9EDRONLc/s1600/blogbuzz_logo.gif"><span class="close">&times;</span></div></div>'
 		};
 
 	// Styles
@@ -75,6 +76,32 @@ var exp = (function($) {
 			display: block;\
 			margin-bottom: 8px;\
 		}\
+		#product-box {\
+			display: table;\
+		}\
+		#lowPricePopup {\
+			display: none;\
+			position: fixed;\
+			top: 0;\
+			left: 0;\
+			z-index: 1;\
+			width: 100%;\
+		}\
+		#modalContent {\
+			width: 400px;\
+			display: block;\
+			margin: 15% auto;\
+		}\
+		.close {\
+		    color: #aaa;\
+		    float: right;\
+		    font-size: 28px;\
+		    font-weight: bold;\
+		    cursor: pointer;\
+		}\
+		div#product-box .brand-image {\
+			float: left;\
+		}\
 	';
 
 
@@ -92,6 +119,41 @@ var exp = (function($) {
 		// Move product code above image after product title
 		var $productTitle = $('#product-box .item').children('h1');
 		$productTitle.after($('#prod-description-top-left'));
+
+		// Remove add favourite button for guest customers
+		if ($('body').text().indexOf('Login') > -1) {
+			$('.fav-btns').css('display', 'none');
+		};
+
+		// Low Price Promise pop-up when product code is selected
+		$('body').after(exp.vars.lowPricePopup);
+		var lowPriceModal = $('#lowPricePopup');
+		var closeButton = $('.close');
+
+		function getSelectedText() {
+        	var text = "";
+        	if (typeof window.getSelection != "undefined") {
+            	text = window.getSelection().toString();
+        	}
+        	else if (typeof document.selection != "undefined" && document.selection.type == "Text") {
+            	text = document.selection.createRange().text;
+        	}
+        	return text;
+    	};
+    
+    	function lowPricePopup() {
+        	var selectedText = getSelectedText();
+        	var productCode = $('.prod-code').children('span').text().replace('Product code: ','');
+        	if (selectedText.indexOf(productCode) > -1) {
+             	lowPriceModal.css('display', 'block');
+        	};
+    	};
+
+    	document.onmouseup = lowPricePopup;
+
+    	closeButton.on('click', function() {
+		    lowPriceModal.css('display', 'none');
+		});
 	};
 
 	exp.init();
