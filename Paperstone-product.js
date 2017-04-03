@@ -22,8 +22,8 @@ var exp = (function($) {
 	// Variables
 	// Object containing variables, generally these would be strings or jQuery objects
 	exp.vars = {
-			bestSellerBanner : '<div id="bestSellerBanner"><span>BESTSELLER</span></div>',
-			lowPricePopup : '<div id="lowPricePopup"><div id="modalContent"><img src="http://2.bp.blogspot.com/-u54XGk-hUdU/U1zanJgulMI/AAAAAAAAByM/aKk9EDRONLc/s1600/blogbuzz_logo.gif"><span class="close">&times;</span></div></div>'
+			bestSellerBanner : '<div id="AWA-bestSellerBanner"><span>BESTSELLER</span></div>',
+			lowPricePopup : '<div id="AWA-lowPricePopup"><div id="AWA-modalContent"><img src="http://2.bp.blogspot.com/-u54XGk-hUdU/U1zanJgulMI/AAAAAAAAByM/aKk9EDRONLc/s1600/blogbuzz_logo.gif"><span class="AWA-close">&times;</span></div></div>'
 		};
 
 	// Styles
@@ -47,7 +47,7 @@ var exp = (function($) {
 		#product-box .product-icons-holder {\
 			display: none;\
 		}\
-		#bestSellerBanner {\
+		#AWA-bestSellerBanner {\
 			width: 300px;\
 			height: 25px;\
 			background-color: #CC0000;\
@@ -58,12 +58,13 @@ var exp = (function($) {
 			font-weight: 700;\
 			margin-left: 9px;\
 		}\
-		#bestSellerBanner span {\
+		#AWA-bestSellerBanner span {\
 			line-height: 25px;\
 			vertical-align: middle;\
 		}\
 		#add-to-basket-box .add-to-basket-button {\
 			background: #ff69b4;\
+			color: white;\
 		}\
 		#mp-basket-checkout-button {\
 			background: #ff69b4;\
@@ -79,7 +80,7 @@ var exp = (function($) {
 		#product-box {\
 			display: table;\
 		}\
-		#lowPricePopup {\
+		#AWA-lowPricePopup {\
 			display: none;\
 			position: fixed;\
 			top: 0;\
@@ -87,12 +88,12 @@ var exp = (function($) {
 			z-index: 1;\
 			width: 100%;\
 		}\
-		#modalContent {\
+		#AWA-modalContent {\
 			width: 400px;\
 			display: block;\
 			margin: 15% auto;\
 		}\
-		.close {\
+		.AWA-close {\
 		    color: #aaa;\
 		    float: right;\
 		    font-size: 28px;\
@@ -101,6 +102,9 @@ var exp = (function($) {
 		}\
 		div#product-box .brand-image {\
 			float: left;\
+		}\
+		.prod-extended-description-icon {\
+			display: none;\
 		}\
 	';
 
@@ -126,9 +130,9 @@ var exp = (function($) {
 		};
 
 		// Low Price Promise pop-up when product code is selected
-		$('body').after(exp.vars.lowPricePopup);
-		var lowPriceModal = $('#lowPricePopup');
-		var closeButton = $('.close');
+		$('body').append(exp.vars.lowPricePopup);
+		var lowPriceModal = $('#AWA-lowPricePopup');
+		var closeButton = $('.AWA-close');
 
 		function getSelectedText() {
         	var text = "";
@@ -143,7 +147,7 @@ var exp = (function($) {
     
     	function lowPricePopup() {
         	var selectedText = getSelectedText();
-        	var productCode = $('.prod-code').children('span').text().replace('Product code: ','');
+        	var productCode = $('.prod-code').children('span').text();
         	if (selectedText.indexOf(productCode) > -1) {
              	lowPriceModal.css('display', 'block');
         	};
@@ -154,6 +158,16 @@ var exp = (function($) {
     	closeButton.on('click', function() {
 		    lowPriceModal.css('display', 'none');
 		});
+
+		// Make extended description less obviousl
+		$('.prod-extended-description').attr('id', 'AWA-exDes');
+		$('.prod-extended-description').removeClass();
+
+		// Fix overflow for products with "More Details"
+		if ( $('body').text().indexOf('Product Description') > -1) {
+			var prodDesHeight = $('#prod-description-window').css('height').replace('px','');
+			$('#prod-description-window').css('height', prodDesHeight - 27 + 'px');
+		};
 	};
 
 	exp.init();
