@@ -23,7 +23,7 @@ var exp = (function($) {
 	// Object containing variables, generally these would be strings or jQuery objects
 	exp.vars = {
 			bestSellerBanner : '<div id="AWA-bestSellerBanner"><span>BESTSELLER</span></div>',
-			lowPricePopup : '<div id="AWA-lowPricePopup"><div id="AWA-modalContent"><img src="http://2.bp.blogspot.com/-u54XGk-hUdU/U1zanJgulMI/AAAAAAAAByM/aKk9EDRONLc/s1600/blogbuzz_logo.gif"><span class="AWA-close">&times;</span></div></div>'
+			lowPricePopup : "<div id='AWA-lowPricePopup'><div id='AWA-modalContent'><span class='AWA-close'>&times;</span><br><h1><span class='LPPcheck'>&#10004;</span> Low price promise</h1><h1>0345 567 4000</h1><p>We're constantly reviewing our prices against competitors, but if you find a lower price <span class='LPPlink'>we'll happily price match.</span></div></div>"
 		};
 
 	// Styles
@@ -89,13 +89,33 @@ var exp = (function($) {
 			width: 100%;\
 		}\
 		#AWA-modalContent {\
-			width: 400px;\
+			width: 300px;\
+			height: 150px;\
 			display: block;\
 			margin: 15% auto;\
+			background: #ff69b4;\
+			border-radius: 15px;\
+			color: white;\
+			text-align: center;\
+			font-size: 16px;\
+			font-family: Arial,"Helvetica Neue",Helvetica,sans-serif;\
+			font-weight: 700;\
+		}\
+		#AWA-modalContent h1 {\
+			font-size: 24px;\
+			margin-bottom: 8px;\
+		}\
+		.LPPcheck {\
+			color: #ff69b4;\
+			background: white;\
+			border-radius: 50%;\
+			letter-spacing: 5px;\
+			padding-left: 3px;\
 		}\
 		.AWA-close {\
-		    color: #aaa;\
+		    color: white;\
 		    float: right;\
+		    margin-right: 5px;\
 		    font-size: 28px;\
 		    font-weight: bold;\
 		    cursor: pointer;\
@@ -105,6 +125,38 @@ var exp = (function($) {
 		}\
 		.prod-extended-description-icon {\
 			display: none;\
+		}\
+		#prod-description-window {\
+			max-height: none !important;\
+			height: 100% !important;\
+			overflow: visible;\
+		}\
+		#AWA-exDes {\
+			color: #444;\
+			border: 0;\
+			background: none;\
+			padding: 0;\
+			margin: 15px 0 0 0;\
+		}\
+		#prod-description ul li, #full-description ul li, .admin-info ul li {\
+			background: none;\
+			padding-left: 1em;\
+		}\
+		.AWA-prod-description-ul ul {\
+			font-size: 16px;\
+			margin-left: 0;\
+			padding-left: 0;\
+		}\
+		.AWA-prod-description-ul li {\
+			text-indent: -23px;\
+			list-style: none;\
+		}\
+		.AWA-prod-description-ul li:before {\
+			content: "\u2714";\
+			color: #3BBA00;\
+			font-size: 18px;\
+			padding-right: 5px;\
+			font-weight: 800;\
 		}\
 	';
 
@@ -116,7 +168,7 @@ var exp = (function($) {
 		$('head').append('<style>' + exp.css + '</style>');
 
 		// Add Bestseller banner if applicable
-		if ($('#product-box .product-icons-holder span:contains("Bestselling")').length > 0) {
+		if ($('#product-box .product-icons-holder span:contains("Bestselling")').length) {
 			$('#product-box .img-wrap img').before(exp.vars.bestSellerBanner);
 		};
 
@@ -131,8 +183,8 @@ var exp = (function($) {
 
 		// Low Price Promise pop-up when product code is selected
 		$('body').append(exp.vars.lowPricePopup);
-		var lowPriceModal = $('#AWA-lowPricePopup');
-		var closeButton = $('.AWA-close');
+		var $lowPriceModal = $('#AWA-lowPricePopup');
+		var $closeButton = $('.AWA-close');
 
 		function getSelectedText() {
         	var text = "";
@@ -149,25 +201,23 @@ var exp = (function($) {
         	var selectedText = getSelectedText();
         	var productCode = $('.prod-code').children('span').text();
         	if (selectedText.indexOf(productCode) > -1) {
-             	lowPriceModal.css('display', 'block');
+             	$lowPriceModal.css('display', 'block');
         	};
     	};
 
     	document.onmouseup = lowPricePopup;
 
-    	closeButton.on('click', function() {
-		    lowPriceModal.css('display', 'none');
+    	$closeButton.on('click', function() {
+		    $lowPriceModal.css('display', 'none');
 		});
 
-		// Make extended description less obviousl
+		// Make extended description less obvious
 		$('.prod-extended-description').attr('id', 'AWA-exDes');
-		$('.prod-extended-description').removeClass();
+		var $productDesUl = $('#prod-description').children('ul');
+		$productDesUl.after($('#AWA-exDes'));
 
-		// Fix overflow for products with "More Details"
-		if ( $('body').text().indexOf('Product Description') > -1) {
-			var prodDesHeight = $('#prod-description-window').css('height').replace('px','');
-			$('#prod-description-window').css('height', prodDesHeight - 27 + 'px');
-		};
+		// Give product description list class for styling
+		$productDesUl.addClass('AWA-prod-description-ul')
 	};
 
 	exp.init();
