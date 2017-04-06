@@ -23,7 +23,8 @@ var exp = (function($) {
 	// Object containing variables, generally these would be strings or jQuery objects
 	exp.vars = {
 			bestSellerBanner : '<div id="AWA-bestSellerBanner"><span>BESTSELLER</span></div>',
-			lowPricePopup : "<div id='AWA-lowPricePopup'><div id='AWA-modalContent'><span class='AWA-close'>&times;</span><br><h1><span class='LPPcheck'>&#10004;</span> Low price promise</h1><h1>0345 567 4000</h1><p>We're constantly reviewing our prices against competitors, but if you find a lower price <span class='LPPlink'>we'll happily price match.</span></div></div>"
+			lowPricePopup : "<div id='AWA-lowPricePopup'><div id='AWA-modalContent'><span class='AWA-close'>&times;</span><br><h1><span class='LPPcheck'>&#10004;</span> Low price promise</h1><h1>0345 567 4000</h1><p>We're constantly reviewing our prices against competitors, but if you find a lower price <a href='http://www.paperstone.co.uk/help_91_The-Paperstone-Price-Promise.aspx' target='_blank'>we'll happily price match.</a></div></div>",
+			exDesCheck : '<br><span class="AWA-checkmark">&#10004;</span>'
 		};
 
 	// Styles
@@ -137,6 +138,7 @@ var exp = (function($) {
 			background: none;\
 			padding: 0;\
 			margin: 15px 0 0 0;\
+			display: inline;\
 		}\
 		#prod-description ul li, #full-description ul li, .admin-info ul li {\
 			background: none;\
@@ -148,8 +150,8 @@ var exp = (function($) {
 			padding-left: 0;\
 		}\
 		.AWA-prod-description-ul li {\
-			text-indent: -23px;\
-			list-style: none;\
+			margin-left: -14px;\
+			display: flex;\
 		}\
 		.AWA-prod-description-ul li:before {\
 			content: "\u2714";\
@@ -157,6 +159,14 @@ var exp = (function($) {
 			font-size: 18px;\
 			padding-right: 5px;\
 			font-weight: 800;\
+		}\
+		.AWA-checkmark {\
+			color: #3BBA00;\
+			font-size: 18px;\
+			font-weight: 800;\
+		}\
+		.prod-extended-description p {\
+			display: inline;\
 		}\
 	';
 
@@ -215,9 +225,14 @@ var exp = (function($) {
 		$('.prod-extended-description').attr('id', 'AWA-exDes');
 		var $productDesUl = $('#prod-description').children('ul');
 		$productDesUl.after($('#AWA-exDes'));
+		// Add checkmark
+		$('#AWA-exDes').before(exp.vars.exDesCheck);
 
 		// Give product description list class for styling
-		$productDesUl.addClass('AWA-prod-description-ul')
+		$productDesUl.addClass('AWA-prod-description-ul');
+
+		// Move Product Variant Collections beneath Product Description list
+		$('#desc-links').before($('#prod-variant-collections'));
 	};
 
 	exp.init();
