@@ -168,6 +168,20 @@ var exp = (function($) {
 		.prod-extended-description p {\
 			display: inline;\
 		}\
+		@media screen and (max-width: 670px) {\
+			#product-box h1 {\
+				width: auto;\
+			}\
+			#product-box .prod-img .img-wrap img {\
+				float: left;\
+			}\
+			#product-box #img-carousel {\
+				float: left;\
+			}\
+			#product-box {\
+				display: block;\
+			}\
+		}\
 	';
 
 
@@ -233,6 +247,12 @@ var exp = (function($) {
 
 		// Move Product Variant Collections beneath Product Description list
 		$('#desc-links').before($('#prod-variant-collections'));
+
+		// Change chat now message
+		var chatTitle = $('#livechat-compact-view').contents().find('#open-label');
+		if (chatTitle.text() === 'Leave a message') {
+			chatTitle.text('Chat now');
+		};
 	};
 
 	exp.init();
