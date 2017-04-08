@@ -4,6 +4,11 @@
 // pass in jQuery to use as $. Other globals could be passed in if required.
 var exp = (function($) {
 
+	// Add exception for pages that meet RegEx but are not PDPs
+	if (!$('body').hasClass('page-type-ProductDetail')) {
+		return;
+	}
+
 	// Initialise the experiment object
 	var exp = {};
 
@@ -16,7 +21,7 @@ var exp = (function($) {
 	};
 
 	// Log the experiment, useful when multiple experiments are running
-	exp.log('AWA - Paperstone- Product');
+	exp.log('AWA - Paperstone- PDP - v1');
 
 
 	// Variables
@@ -31,6 +36,9 @@ var exp = (function($) {
 	// Styles
 	// String containing the CSS for the experiment
 	exp.css = '\
+		div#expected-delivery-box{ \
+			display: none;\
+		}\
 		#product-box {\
 			border: none;\
 		}\
@@ -107,6 +115,10 @@ var exp = (function($) {
 			font-size: 24px;\
 			margin-bottom: 8px;\
 		}\
+		#AWA-modalContent a {\
+			color: white;\
+			text-decoration: underline;\
+		}\
 		.LPPcheck {\
 			color: #ff69b4;\
 			background: white;\
@@ -133,7 +145,7 @@ var exp = (function($) {
 			height: 100% !important;\
 			overflow: visible;\
 		}\
-		#AWA-exDes {\
+		.AWA-exDes {\
 			color: #444;\
 			border: 0;\
 			background: none;\
@@ -189,6 +201,9 @@ var exp = (function($) {
 	// Init function
 	// Called to run the actual experiment, DOM manipulation, event listeners, etc
 	exp.init = function() {
+		// Mark experiment
+		$('head').addClass('AWA-PDP-v1');
+
 		// Add styles
 		$('head').append('<style>' + exp.css + '</style>');
 
@@ -237,11 +252,11 @@ var exp = (function($) {
 		});
 
 		// Make extended description less obvious
-		$('.prod-extended-description').attr('id', 'AWA-exDes');
+		$('.prod-extended-description').addClass('AWA-exDes');
 		var $productDesUl = $('#prod-description').children('ul');
-		$productDesUl.after($('#AWA-exDes'));
+		$productDesUl.after($('#prod-description .AWA-exDes'));
 		// Add checkmark
-		$('#AWA-exDes').before(exp.vars.exDesCheck);
+		$('#prod-description .AWA-exDes').before(exp.vars.exDesCheck);
 
 		// Give product description list class for styling
 		$productDesUl.addClass('AWA-prod-description-ul');
@@ -250,10 +265,20 @@ var exp = (function($) {
 		$('#desc-links').before($('#prod-variant-collections'));
 
 		// Change chat now message
-		var chatTitle = $('#livechat-compact-view').contents().find('#open-label');
-		if (chatTitle.text() === 'Leave a message') {
-			chatTitle.text('Chat now');
-		};
+		function poll() {
+			var $chatIframe = $('#livechat-compact-view');
+			if ($chatIframe.contents().find('#open-label').length) {
+				setTimeout(function() {
+					if ($chatIframe.contents().find('#open-label').text() === 'Leave a message') {
+						$chatIframe.contents().find('#open-label').text('Chat now');
+					}
+				}, 1000); 
+			} else {
+				setTimeout(poll, 50);
+			}
+		}
+
+		poll();
 
 		// Limit product description to 7 bullets
 		exp.vars.productBullets = $('.AWA-prod-description-ul').children('li');
