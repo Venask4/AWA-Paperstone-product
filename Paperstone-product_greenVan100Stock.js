@@ -185,6 +185,12 @@ var exp = (function($) {
 		.prod-extended-description p {\
 			display: inline;\
 		}\
+		#add-to-basket-box .rrp-savings-container {\
+			font-size: 100%;\
+		}\
+		#sliding-module.slide {\
+			position: static;\
+		}\
 		@media screen and (max-width: 670px) {\
 			#product-box h1 {\
 				width: auto;\
@@ -296,6 +302,11 @@ var exp = (function($) {
 		if (exp.vars.stockQty < 100) {
 			$('#add-to-basket-box div.stock-message .stock-qty').css('display', 'block');
 		};
+
+		// Move RRP to same line as savings
+		var $productRRPContainer = $('#add-to-basket-box .price-box .rrp-container');
+		$('.rrp-savings-container').before($productRRPContainer);
+		$('.rrp-savings-container').prepend('<span>&#160</span>');
 	};
 
 	exp.init();
