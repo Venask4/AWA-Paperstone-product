@@ -93,10 +93,11 @@ var exp = (function($) {
 		#AWA-lowPricePopup {\
 			display: none;\
 			position: fixed;\
-			top: 0;\
-			left: 0;\
+			top: 200px;\
+			left: 50%;\
+			margin-left: -150px;\
 			z-index: 1;\
-			width: 100%;\
+			width: 300px;\
 		}\
 		#AWA-modalContent {\
 			width: 300px;\
@@ -187,6 +188,15 @@ var exp = (function($) {
 		#sliding-module.slide {\
 			position: static;\
 		}\
+		#sliding-holder {\
+			position: static !important;\
+		}\
+		#livechat-eye-catcher {\
+			display: none !important;\
+		}\
+		#mp-basket-checkout-button-wide {\
+			background: #ff69b4;\
+		}\
 		@media screen and (max-width: 670px) {\
 			#product-box h1 {\
 				width: auto;\
@@ -270,21 +280,21 @@ var exp = (function($) {
 		// Move Product Variant Collections beneath Product Description list
 		$('#desc-links').before($('#prod-variant-collections'));
 
-		// Change chat now message
-		function poll() {
-			var $chatIframe = $('#livechat-compact-view');
-			if ($chatIframe.contents().find('#open-label').length) {
-				setTimeout(function() {
-					if ($chatIframe.contents().find('#open-label').text() === 'Leave a message') {
-						$chatIframe.contents().find('#open-label').text('Chat now');
-					}
-				}, 1000); 
-			} else {
-				setTimeout(poll, 50);
-			}
-		}
+		// // Change chat now message - DELETE PER AWA COMMENTS 4/12/17
+		// function poll() {
+		// 	var $chatIframe = $('#livechat-compact-view');
+		// 	if ($chatIframe.contents().find('#open-label').length) {
+		// 		setTimeout(function() {
+		// 			if ($chatIframe.contents().find('#open-label').text() === 'Leave a message') {
+		// 				$chatIframe.contents().find('#open-label').text('Chat now');
+		// 			}
+		// 		}, 1000); 
+		// 	} else {
+		// 		setTimeout(poll, 50);
+		// 	}
+		// }
 
-		poll();
+		// poll();
 
 		// Limit product description to 7 bullets
 		exp.vars.productBullets = $('.AWA-prod-description-ul').children('li');
