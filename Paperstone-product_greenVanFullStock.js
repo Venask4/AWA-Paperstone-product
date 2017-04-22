@@ -197,6 +197,12 @@ var exp = (function($) {
 		#mp-basket-checkout-button-wide {\
 			background: #ff69b4;\
 		}\
+		.page-type-ProductDetail .breadcrumb-box, .page-type-PrinterProductDetail .breadcrumb-box {\
+			padding-left: 10px;\
+		}\
+		.rrp-container {\
+			margin-right: 5px;\
+		}\
 		@media screen and (max-width: 670px) {\
 			#product-box h1 {\
 				width: auto;\
@@ -253,19 +259,40 @@ var exp = (function($) {
         	return text;
     	};
     
+        var productCode = $('.prod-code').children('span').text();
+
     	function lowPricePopup() {
-        	var selectedText = getSelectedText();
-        	var productCode = $('.prod-code').children('span').text();
-        	if (selectedText.indexOf(productCode) > -1) {
+    		var selectedText = getSelectedText();
+        	if (selectedText.indexOf(productCode) > -1 && exp.vars.alreadySelected === false) {
              	$lowPriceModal.css('display', 'block');
-        	};
-    	};
+        	}
+    	}
 
     	document.onmouseup = lowPricePopup;
+
+    	function checkIfSelected() {
+    		var selectedText = getSelectedText();
+    		if (selectedText.indexOf(productCode) > -1) {
+    			exp.vars.alreadySelected = true;
+    		}
+    		else {
+    			exp.vars.alreadySelected = false;
+    		}
+    	}
+
+    	document.onmousedown = checkIfSelected;
 
     	$closeButton.on('click', function() {
 		    $lowPriceModal.css('display', 'none');
 		});
+
+		closeModal = function() {
+			if (event.target !== $lowPriceModal) {
+				$lowPriceModal.css('display', 'none');
+			}
+		}
+
+		window.onmousedown = closeModal;
 
 		// Make extended description less obvious
 		$('.prod-extended-description').addClass('AWA-exDes');
@@ -301,10 +328,15 @@ var exp = (function($) {
 		if (exp.vars.productBullets.length > 7) {
 			$('.AWA-prod-description-ul').html(exp.vars.productBullets.slice(0, 7));
 		};
+
+		// Add 'Only' to stock qty
+		var $stockQty = $('.stock-qty').first();
+		var $stockQtyText = $stockQty.text();
+		$stockQty.text('(Only ' + $stockQtyText.replace('(',''));
+
 		// Move RRP to same line as savings
 		var $productRRPContainer = $('#add-to-basket-box .price-box .rrp-container');
 		$('.rrp-savings-container').before($productRRPContainer);
-		$('.rrp-savings-container').prepend('<span>&#160</span>');
 	};
 
 	exp.init();

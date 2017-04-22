@@ -194,6 +194,12 @@ var exp = (function($) {
 		#mp-basket-checkout-button-wide {\
 			background: #ff69b4;\
 		}\
+		.page-type-ProductDetail .breadcrumb-box, .page-type-PrinterProductDetail .breadcrumb-box {\
+			padding-left: 10px;\
+		}\
+		.rrp-container {\
+			margin-right: 5px;\
+		}\
 		@media screen and (max-width: 670px) {\
 			#product-box h1 {\
 				width: auto;\
@@ -227,10 +233,12 @@ var exp = (function($) {
 		if ($('#mp-header-login-links').text().indexOf('Login') > -1) {
 			$('.fav-btns').css('display', 'none');
 		};
+
 		// Low Price Promise pop-up when product code is selected
 		$('body').append(exp.vars.lowPricePopup);
 		var $lowPriceModal = $('#AWA-lowPricePopup');
 		var $closeButton = $('.AWA-close');
+
 		function getSelectedText() {
         	var text = "";
         	if (typeof window.getSelection != "undefined") {
@@ -242,17 +250,40 @@ var exp = (function($) {
         	return text;
     	};
     
+        var productCode = $('.prod-code').children('span').text();
+
     	function lowPricePopup() {
-        	var selectedText = getSelectedText();
-        	var productCode = $('.prod-code').children('span').text();
-        	if (selectedText.indexOf(productCode) > -1) {
+    		var selectedText = getSelectedText();
+        	if (selectedText.indexOf(productCode) > -1 && exp.vars.alreadySelected === false) {
              	$lowPriceModal.css('display', 'block');
-        	};
-    	};
+        	}
+    	}
+
     	document.onmouseup = lowPricePopup;
+
+    	function checkIfSelected() {
+    		var selectedText = getSelectedText();
+    		if (selectedText.indexOf(productCode) > -1) {
+    			exp.vars.alreadySelected = true;
+    		}
+    		else {
+    			exp.vars.alreadySelected = false;
+    		}
+    	}
+
+    	document.onmousedown = checkIfSelected;
+
     	$closeButton.on('click', function() {
 		    $lowPriceModal.css('display', 'none');
 		});
+
+		closeModal = function() {
+			if (event.target !== $lowPriceModal) {
+				$lowPriceModal.css('display', 'none');
+			}
+		}
+
+		window.onmousedown = closeModal;
 		// Make extended description less obvious
 		$('.prod-extended-description').addClass('AWA-exDes');
 		var $productDesUl = $('#prod-description').children('ul');
@@ -283,15 +314,18 @@ var exp = (function($) {
 			$('.AWA-prod-description-ul').html(exp.vars.productBullets.slice(0, 7));
 		};
 		// Limit stock qty to 100 or less
-		exp.vars.stockQty = $('.stock-qty').text().replace('(','');
+		var $stockQty = $('.stock-qty').first();
+		var $stockQtyText = $stockQty.text();
+		exp.vars.stockQty = $stockQtyText.replace('(','');
 		exp.vars.stockQty = parseInt(exp.vars.stockQty);
 		if (exp.vars.stockQty < 100) {
 			$('#add-to-basket-box div.stock-message .stock-qty').css('display', 'block');
 		};
+		$stockQty.text('(Only ' + $stockQtyText.replace('(',''));
+
 		// Move RRP to same line as savings
 		var $productRRPContainer = $('#add-to-basket-box .price-box .rrp-container');
 		$('.rrp-savings-container').before($productRRPContainer);
-		$('.rrp-savings-container').prepend('<span>&#160</span>');
 	};
 	exp.init();
 	// Return the experiment object so we can access it later if required

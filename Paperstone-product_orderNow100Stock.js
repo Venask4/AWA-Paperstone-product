@@ -31,7 +31,8 @@ var exp = (function($) {
 			lowPricePopup : "<div id='AWA-lowPricePopup'><div id='AWA-modalContent'><span class='AWA-close'>&times;</span><br><h1><span class='LPPcheck'>&#10004;</span> Low price promise</h1><h1>0345 567 4000</h1><p>We're constantly reviewing our prices against competitors, but if you find a lower price <a href='http://www.paperstone.co.uk/help_91_The-Paperstone-Price-Promise.aspx' target='_blank'>we'll happily price match.</a></div></div>",
 			exDesCheck : '<br><span class="AWA-checkmark">&#10004;</span>',
 			productBullets: 0,
-			stockQty: 0
+			stockQty: 0,
+			alreadySelected: false
 		};
 
 	// Styles
@@ -209,6 +210,16 @@ var exp = (function($) {
 		#mp-basket-checkout-button-wide {\
 			background: #ff69b4;\
 		}\
+		.page-type-ProductDetail .breadcrumb-box, .page-type-PrinterProductDetail .breadcrumb-box {\
+			padding-left: 10px;\
+		}\
+		div#expected-delivery-box {\
+			height: 30px !important;\
+			margin-top: 0px;\
+		}\
+		.rrp-container {\
+			margin-right: 5px;\
+		}\
 		@media screen and (max-width: 670px) {\
 			#product-box h1 {\
 				width: auto;\
@@ -265,19 +276,40 @@ var exp = (function($) {
         	return text;
     	};
     
+        var productCode = $('.prod-code').children('span').text();
+
     	function lowPricePopup() {
-        	var selectedText = getSelectedText();
-        	var productCode = $('.prod-code').children('span').text();
-        	if (selectedText.indexOf(productCode) > -1) {
+    		var selectedText = getSelectedText();
+        	if (selectedText.indexOf(productCode) > -1 && exp.vars.alreadySelected === false) {
              	$lowPriceModal.css('display', 'block');
-        	};
-    	};
+        	}
+    	}
 
     	document.onmouseup = lowPricePopup;
+
+    	function checkIfSelected() {
+    		var selectedText = getSelectedText();
+    		if (selectedText.indexOf(productCode) > -1) {
+    			exp.vars.alreadySelected = true;
+    		}
+    		else {
+    			exp.vars.alreadySelected = false;
+    		}
+    	}
+
+    	document.onmousedown = checkIfSelected;
 
     	$closeButton.on('click', function() {
 		    $lowPriceModal.css('display', 'none');
 		});
+
+		closeModal = function() {
+			if (event.target !== $lowPriceModal) {
+				$lowPriceModal.css('display', 'none');
+			}
+		}
+
+		window.onmousedown = closeModal;
 
 		// Make extended description less obvious
 		$('.prod-extended-description').addClass('AWA-exDes');
@@ -315,17 +347,19 @@ var exp = (function($) {
 		};
 
 		// Limit stock qty to 100 or less
-		$('#expected-delivery-box').before($('.stock-qty'));
-		exp.vars.stockQty = $('.stock-qty').text().replace('(','');
+		var $stockQty = $('.stock-qty').first();
+		var $stockQtyText = $stockQty.text();
+		$('#expected-delivery-box').before($stockQty);
+		exp.vars.stockQty = $stockQtyText.replace('(','');
 		exp.vars.stockQty = parseInt(exp.vars.stockQty);
 		if (exp.vars.stockQty < 100) {
-			$('.stock-qty').css('display', 'block');
+			$stockQty.css('display', 'block');
 		};
+		$stockQty.text('(Only ' + $stockQtyText.replace('(',''));
 
 		// Move RRP to same line as savings
-		var $productRRPContainer = $('#add-to-basket-box .price-box .rrp-container');
+		var $productRRPContainer = $('#add-to-basket-box .price-box .rrp-container').first();
 		$('.rrp-savings-container').before($productRRPContainer);
-		$('.rrp-savings-container').prepend('<span>&#160</span>');
 	};
 
 	exp.init();
