@@ -324,8 +324,29 @@ var exp = (function($) {
 		$stockQty.text('(Only ' + $stockQtyText.replace('(',''));
 
 		// Move RRP to same line as savings
-		var $productRRPContainer = $('#add-to-basket-box .price-box .rrp-container');
-		$('.rrp-savings-container').before($productRRPContainer);
+		var $productRRPContainer = $('#add-to-basket-box .rrp-container').first();
+		var $rrpSavings = $('.rrp-savings-container');
+		$rrpSavings.before($productRRPContainer);
+		// Re-cache RRP Container location
+		$productRRPContainer = $('#add-to-basket-box .rrp-container').first();
+		// Resize RRP font if necessary
+		var maxWidth = parseInt($('#price-line').css('width'), 10);
+		var rrpSavingsWidth = parseInt($rrpSavings.css('width'), 10);
+		var productRRPContainerWidth = parseInt($productRRPContainer.css('width'), 10);
+		var totalFontWidth = rrpSavingsWidth + productRRPContainerWidth;
+		var RRPFontSize = parseInt($productRRPContainer.css('font-size'), 10);
+		var RRPSavingsFontSize = parseInt($rrpSavings.css('font-size'), 10);
+		while (totalFontWidth > maxWidth) {
+			if ($rrpSavings.css('font-size') === '8px') {
+				$('#add-to-basket-box .price-box').css('width', 'auto');
+				break;
+			}
+			$rrpSavings.css('font-size', RRPSavingsFontSize - 1 + 'px');
+			$productRRPContainer.css('font-size', RRPFontSize - 1 + 'px');
+			rrpSavingsWidth = parseInt($rrpSavings.css('width'), 10);
+			productRRPContainerWidth = parseInt($productRRPContainer.css('width'), 10);
+			totalFontWidth = rrpSavingsWidth + productRRPContainerWidth;
+		}
 	};
 	exp.init();
 	// Return the experiment object so we can access it later if required
